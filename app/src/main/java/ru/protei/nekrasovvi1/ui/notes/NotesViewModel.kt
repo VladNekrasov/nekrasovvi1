@@ -6,12 +6,11 @@ import androidx.lifecycle.ViewModel
 import ru.protei.nekrasovvi1.domain.Note
 
 class NotesViewModel : ViewModel() {
-    var selected  = mutableStateOf<Note?>(null)
-
+    val selected  = mutableStateOf<Note?>(null)
     val notes = mutableStateListOf<Note>(
         Note(
-            title = "Покупки",
-            text = "Молоко, яйца, хлеб"
+        title = "Покупки",
+        text = "Молоко, яйца, хлеб"
         ),
         Note(
             title = "Встреча",
@@ -47,15 +46,21 @@ class NotesViewModel : ViewModel() {
 
     }
 
-    fun OnEditComplete(){
-
+    fun onEditComplete(){
+        selected.value=null
     }
 
     fun onNoteSelected(note: Note){
-
+        selected.value=note
     }
 
     fun onAddNoteClicked(){
-
+        if (selected.value==null){
+            selected.value=Note(
+                title = "",
+                text = ""
+            )
+        }
     }
+
 }
