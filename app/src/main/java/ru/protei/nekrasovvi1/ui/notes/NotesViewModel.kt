@@ -43,24 +43,28 @@ class NotesViewModel : ViewModel() {
     )
 
     fun onNoteChange(title: String, text: String){
-
+        selected.value=Note(
+            title = title,
+            text = text
+        )
     }
 
     fun onEditComplete(){
+        notes.add(0,selected.value!!)
         selected.value=null
     }
 
     fun onNoteSelected(note: Note){
         selected.value=note
+        notes.remove(note)
     }
 
     fun onAddNoteClicked(){
         if (selected.value==null){
-            selected.value=Note(
+            selected.value= Note(
                 title = "",
                 text = ""
             )
         }
     }
-
 }

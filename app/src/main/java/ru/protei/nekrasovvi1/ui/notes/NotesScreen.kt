@@ -69,8 +69,7 @@ fun NotesScreen(
     val notes = remember {
         vm.notes
     }
-    var title by remember { mutableStateOf("") }
-    var content by remember { mutableStateOf("") }
+
     Scaffold(
         floatingActionButton = {
             if (selected.value==null) {
@@ -99,6 +98,8 @@ fun NotesScreen(
                 }
             }
         } else{
+            var title by remember { mutableStateOf(vm.selected.value!!.title) }
+            var text by remember { mutableStateOf(vm.selected.value!!.text) }
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
@@ -106,7 +107,9 @@ fun NotesScreen(
             ) {
                 TextField(
                     value = title,
-                    onValueChange = { title = it },
+                    onValueChange = {
+                        title = it
+                        vm.onNoteChange(it,text) },
                     label = { Text("Заголовок") },
                     textStyle = TextStyle(fontSize = 18.sp),
                     modifier = Modifier
@@ -117,11 +120,12 @@ fun NotesScreen(
                     )
                 )
                 BasicTextField(
-                    value = content,
+                    value = text,
                     textStyle = MaterialTheme.typography.bodyLarge
                         .copy(color = MaterialTheme.colorScheme.onBackground),
                     onValueChange = {
-                        content = it
+                        text = it
+                        vm.onNoteChange(title,it)
                     },
                     cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     decorationBox = {innerTextField ->
