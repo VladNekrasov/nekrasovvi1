@@ -63,16 +63,11 @@ import ru.protei.nekrasovvi1.ui.theme.Nekrasovvi1Theme
 fun NotesScreen(
     vm: NotesViewModel
 ) {
-    val selected = remember {
-        vm.selected
-    }
-    val notes = remember {
-        vm.notes
-    }
-
+    val notes = vm.notes
+    var selected = vm.selected
     Scaffold(
         floatingActionButton = {
-            if (selected.value==null) {
+            if (selected==null) {
                 FloatingActionButton(onClick = {vm.onAddNoteClicked()}) {
                     Icon(Icons.Default.Add, contentDescription = "Add")
                 }
@@ -84,7 +79,7 @@ fun NotesScreen(
             }
         }
     ){innerPadding ->
-        if (selected.value==null) {
+        if (selected==null) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
@@ -98,8 +93,8 @@ fun NotesScreen(
                 }
             }
         } else{
-            var title by remember { mutableStateOf(vm.selected.value!!.title) }
-            var text by remember { mutableStateOf(vm.selected.value!!.text) }
+            var title by remember { mutableStateOf(vm.selected!!.title) }
+            var text by remember { mutableStateOf(vm.selected!!.text) }
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
