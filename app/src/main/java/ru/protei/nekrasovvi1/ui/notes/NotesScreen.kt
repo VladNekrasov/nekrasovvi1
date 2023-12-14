@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,58 +59,34 @@ fun NotesScreen(
         }
     ){innerPadding ->
         if (selected==null) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .background(MaterialTheme.colorScheme.background)){
-                items(notes) { note ->
-                    NoteItem(
-                        note = note,
-                        onNoteSelected = {vm.onNoteSelected(note)}
-                    )
-                }
-            }
+            Notes(notes = notes, innerPadding = innerPadding, onNoteSelected = {note -> vm.onNoteSelected(note)})
         } else{
-            Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                TextField(
-                    value = selected.title,
-                    onValueChange = {
-                        vm.onNoteChange(it,selected.text) },
-                    label = { Text("Заголовок") },
-                    textStyle = TextStyle(fontSize = 18.sp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = MaterialTheme.colorScheme.onPrimary
-                    )
-                )
-                BasicTextField(
-                    value = selected.text,
-                    textStyle = MaterialTheme.typography.bodyLarge
-                        .copy(color = MaterialTheme.colorScheme.onBackground),
-                    onValueChange = {
-                        vm.onNoteChange(selected.title,it)
-                    },
-                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
-                    decorationBox = {innerTextField ->
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)){
-                            innerTextField()
-                        }
-                    },
-                    minLines = 20)
-            }
+            NoteEdit(selected = selected, innerPadding = innerPadding, onNoteChange = {title, text -> vm.onNoteChange(title,text)})
         }
     }
 
 }
+
+@Composable
+fun Notes(
+    notes: List<Note>,
+    innerPadding: PaddingValues,
+    onNoteSelected: (Note) -> Unit
+){
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = Modifier
+            .padding(innerPadding)
+            .background(MaterialTheme.colorScheme.background)){
+        items(notes) { note ->
+            NoteItem(
+                note = note,
+                onNoteSelected = {onNoteSelected(note)}
+            )
+        }
+    }
+}
+
 @Composable
 fun NoteItem(note: Note,
              onNoteSelected: (Note) -> Unit
@@ -143,5 +120,50 @@ fun NoteItem(note: Note,
                 maxLines = 3
             )
         }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NoteEdit(
+    selected: Note,
+    innerPadding: PaddingValues,
+    onNoteChange: (String,String) -> Unit
+){
+    Column(
+        modifier = Modifier
+            .padding(innerPadding)
+            .verticalScroll(rememberScrollState())
+    ) {
+        TextField(
+            value = selected.title,
+            onValueChange = {
+                onNoteChange(it,selected.text) },
+            label = { Text("Заголовок") },
+            textStyle = TextStyle(fontSize = 18.sp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = MaterialTheme.colorScheme.onPrimary
+            )
+        )
+        BasicTextField(
+            value = selected.text,
+            textStyle = MaterialTheme.typography.bodyLarge
+                .copy(color = MaterialTheme.colorScheme.onBackground),
+            onValueChange = {
+                onNoteChange(selected.title,it)
+            },
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            decorationBox = {innerTextField ->
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)){
+                    innerTextField()
+                }
+            },
+            minLines = 20)
     }
 }
