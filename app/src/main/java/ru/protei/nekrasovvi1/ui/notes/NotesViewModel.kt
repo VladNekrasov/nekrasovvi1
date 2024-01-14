@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import ru.protei.nekrasovvi1.domain.Note
 import ru.protei.nekrasovvi1.domain.NotesUseCase
@@ -53,16 +55,21 @@ class NotesViewModel(private val notesUseCase: NotesUseCase) : ViewModel() {
                 )
             )
             notesUseCase.fillWithInitialNotes(initialNotes)
-            _notes.value = initialNotes
+
+            notesUseCase.notesFlow().collect() {newNotes ->
+                _notes.value = newNotes
+            }
         }
     }
 
     fun onNoteChange(title: String, text: String){
-        selected=Note(
+        selected = Note(
+            id = this.selected?.id,
             title = title,
             text = text
         )
     }
+
 
      fun onEditComplete(){
         if (selected?.title?.isNotEmpty() == true || selected?.text?.isNotEmpty() == true) {
@@ -71,7 +78,7 @@ class NotesViewModel(private val notesUseCase: NotesUseCase) : ViewModel() {
                 notesUseCase.save(selected!!)
             }
         }
-          selected=null
+         selected=null
     }
 
     fun onNoteSelected(note: Note){
@@ -79,11 +86,12 @@ class NotesViewModel(private val notesUseCase: NotesUseCase) : ViewModel() {
     }
 
     fun onAddNoteClicked(){
-//        if (selected==null){
-//            selected=Note(
-//                title = "",
-//                text = ""
-//            )
-//        }
+        if (selected==null){
+            selected=Note(
+                title = "",
+                text = ""
+            )
+        }
+
     }
 }
