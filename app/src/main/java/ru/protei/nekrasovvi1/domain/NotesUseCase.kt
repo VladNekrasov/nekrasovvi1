@@ -13,7 +13,14 @@ class NotesUseCase(
             notesRepo.add(item)
         }
     }
-    suspend fun notesFlow(): Flow<List<Note>> {
+    fun notesFlow(): Flow<List<Note>> {
         return notesRepo.allFlow()
+    }
+    suspend fun save(note: Note){
+        if (note.id == null) {
+            notesRepo.add(note)
+        } else {
+            notesRepo.update(note)
+        }
     }
 }
