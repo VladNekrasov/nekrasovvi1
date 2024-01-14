@@ -11,7 +11,7 @@ import ru.protei.nekrasovvi1.domain.Note
 @Dao
 interface NotesDao {
     @Query("SELECT * FROM note")
-    fun all():List<Note>
+    suspend fun all():List<Note>
 
     @Query("SELECT * FROM note ORDER BY note_id ASC")
     fun allFlow(): Flow<List<Note>>
