@@ -2,6 +2,7 @@ package ru.protei.nekrasovvi1.data
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import ru.protei.nekrasovvi1.domain.Note
 import ru.protei.nekrasovvi1.domain.NotesRepository
@@ -19,7 +20,11 @@ class NotesRepositoryDB(
         notesDao.update(note)
     }
 
-    override suspend fun deleteAll() = withContext(ioDispatcher) {
+    override fun allFlow(): Flow<List<Note>> {
+        return notesDao.allFlow()
+    }
+
+    override fun deleteAll(){
         notesDao.deleteAll()
     }
 }

@@ -29,6 +29,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
@@ -42,7 +44,8 @@ import ru.protei.nekrasovvi1.domain.Note
 fun NotesScreen(
     vm: NotesViewModel
 ) {
-    val notes = vm.notes
+    val notes by vm.notes.collectAsState()
+    //val notes = vm.notes
     val selected = vm.selected
     Scaffold(
         floatingActionButton = {

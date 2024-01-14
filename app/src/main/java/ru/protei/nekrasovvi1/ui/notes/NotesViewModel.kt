@@ -1,18 +1,19 @@
 package ru.protei.nekrasovvi1.ui.notes
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.protei.nekrasovvi1.domain.Note
 import ru.protei.nekrasovvi1.domain.NotesUseCase
 
 class NotesViewModel(notesUseCase: NotesUseCase) : ViewModel() {
-    private val _notes = mutableStateListOf<Note>()
-    val notes: List<Note> = _notes
+    private val _notes = MutableStateFlow<List<Note>>(emptyList())
+    val notes = _notes.asStateFlow()
     var selected  by mutableStateOf<Note?>(null)
         private set
     init {
