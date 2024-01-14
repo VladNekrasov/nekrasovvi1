@@ -7,17 +7,37 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.room.Room
+import ru.protei.nekrasovvi1.data.NotesDatabase
+import ru.protei.nekrasovvi1.data.NotesRepositoryDB
+import ru.protei.nekrasovvi1.domain.NotesUseCase
 import ru.protei.nekrasovvi1.ui.notes.NotesScreen
 import ru.protei.nekrasovvi1.ui.notes.NotesViewModel
 import ru.protei.nekrasovvi1.ui.theme.Nekrasovvi1Theme
 
 class MainActivity : ComponentActivity() {
 
-    private val notesViewModel: NotesViewModel by viewModels()
+    private val database: NotesDatabase by lazy {
+        Room.databaseBuilder(
+            this,
+            NotesDatabase::class.java, "notes_database"
+        ).fallbackToDestructiveMigration()
+            .build()
+    }
+
+    private val notesRepo by lazy { NotesRepositoryDB(notesDao = database.notesDao())}
+    private val notesUseCase by lazy { NotesUseCase(notesRepo) }
+
+    private val notesViewModel: NotesViewModel by viewModels {
+        viewModelFactory{
+            initializer {
+                NotesViewModel(notesUseCase)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
