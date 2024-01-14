@@ -24,7 +24,11 @@ class NotesRepositoryDB(
         return notesDao.allFlow()
     }
 
-    override fun deleteAll(){
+    override suspend fun deleteAll()= withContext(ioDispatcher) {
         notesDao.deleteAll()
+    }
+
+    override suspend fun deleteById(id: Long) = withContext(ioDispatcher){
+        notesDao.deleteById(id)
     }
 }

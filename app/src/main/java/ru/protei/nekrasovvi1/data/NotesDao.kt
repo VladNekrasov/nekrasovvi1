@@ -26,5 +26,5 @@ interface NotesDao {
     suspend fun deleteById(id: Long)
 
     @Query("DELETE FROM note")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

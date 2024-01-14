@@ -45,7 +45,6 @@ fun NotesScreen(
     vm: NotesViewModel
 ) {
     val notes by vm.notes.collectAsState()
-    //val notes = vm.notes
     val selected = vm.selected
     Scaffold(
         floatingActionButton = {

@@ -16,6 +16,9 @@ class NotesUseCase(
     fun notesFlow(): Flow<List<Note>> {
         return notesRepo.allFlow()
     }
+    suspend fun delete(id: Long){
+        notesRepo.deleteById(id)
+    }
     suspend fun save(note: Note){
         if (note.id == null) {
             notesRepo.add(note)

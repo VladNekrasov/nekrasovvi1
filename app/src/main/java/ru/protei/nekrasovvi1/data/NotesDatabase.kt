@@ -6,7 +6,7 @@ import ru.protei.nekrasovvi1.domain.Note
 
 @Database(
     entities = [Note::class],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 abstract class NotesDatabase : RoomDatabase() {
