@@ -1,4 +1,4 @@
-package ru.protei.nekrasovvi1.data
+package ru.protei.nekrasovvi1.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
