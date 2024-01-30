@@ -20,13 +20,13 @@ class NotesGitHubRepository(private val notesApi: NotesGitHubApi): NotesRemoteRe
     private fun toGitHubIssue(note: Note): GitHubIssue {
         return GitHubIssue(
             number = note.remoteId,
-            title = note.text,
+            title = note.title,
             body = note.text
         )
     }
 
     override suspend fun list(): List<Note> = withContext(Dispatchers.IO) {
-        var issues: List<GitHubIssue>?
+        val issues: List<GitHubIssue>?
         try {
             val result = notesApi.getList()
             if (!result.isSuccessful) {
@@ -67,17 +67,6 @@ class NotesGitHubRepository(private val notesApi: NotesGitHubApi): NotesRemoteRe
 
     override suspend fun update(note: Note): Boolean = withContext(Dispatchers.IO) {
         try {
-//            val issue = toGitHubIssue(note)
-//            if (issue.number == null){
-//                Log.w("NotesGitHubRepository", "Can't update issue")
-//                return@withContext false
-//            }
-//            val result = notesApi.update(issue.number, issue)
-//            if (!result.isSuccessful) {
-//                Log.w("NotesRepositoryApi", "Can't update issue $result")
-//                return@withContext false
-//            }
-//            true
             val issue = toGitHubIssue(note)
             issue.number?.let {
                 val result = notesApi.update(it, issue)
@@ -94,10 +83,6 @@ class NotesGitHubRepository(private val notesApi: NotesGitHubApi): NotesRemoteRe
             Log.w("NotesGitHubRepository", "Can't update issue", e)
             false
         }
-    }
-
-    override suspend fun delete(note: Note): Boolean {
-        TODO("Not yet implemented")
     }
 
 }

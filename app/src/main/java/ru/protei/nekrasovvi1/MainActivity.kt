@@ -15,7 +15,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import ru.protei.nekrasovvi1.data.local.NotesDatabase
 import ru.protei.nekrasovvi1.data.local.NotesRepositoryDB
 import ru.protei.nekrasovvi1.data.remote.NotesGitHubApi

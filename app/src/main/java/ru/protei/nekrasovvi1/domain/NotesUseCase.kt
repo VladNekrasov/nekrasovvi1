@@ -1,7 +1,6 @@
 package ru.protei.nekrasovvi1.domain
 
 import kotlinx.coroutines.flow.Flow
-import ru.protei.nekrasovvi1.data.remote.NotesGitHubApi
 import ru.protei.nekrasovvi1.data.remote.NotesGitHubRepository
 
 class NotesUseCase(
@@ -15,11 +14,11 @@ class NotesUseCase(
         }
     }
     suspend fun loadRemoteNotes(){
-        notesRepo.deleteAll()
         val remoteNotes = notesApi.list()
         remoteNotes.forEach {
             it.remoteId?.let {it2 ->
                 notesRepo.byRemoteId(it2)?.run {
+                    it.id=this.id
                     notesRepo.update(it)
                 } ?: notesRepo.add(it)
             }
@@ -30,9 +29,13 @@ class NotesUseCase(
     }
     suspend fun save(note: Note){
         if (note.id == null) {
-            notesRepo.add(note)
+            notesApi.add(note)?.let {
+                note.remoteId=it
+                notesRepo.add(note)
+            }
         } else {
-            notesRepo.update(note)
+            if (notesApi.update(note))
+                notesRepo.update(note)
         }
     }
 }
