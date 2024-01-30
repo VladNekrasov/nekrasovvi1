@@ -7,6 +7,24 @@ import ru.protei.nekrasovvi1.domain.Note
 import ru.protei.nekrasovvi1.domain.NotesRemoteRepository
 
 class NotesGitHubRepository(private val notesApi: NotesGitHubApi): NotesRemoteRepository{
+
+    private fun toNote(gitHubIssue: GitHubIssue): Note {
+        return Note(
+            id = null,
+            title = gitHubIssue.title,
+            text = gitHubIssue.body,
+            remoteId = gitHubIssue.number
+        )
+    }
+
+    private fun toGitHubIssue(note: Note): GitHubIssue {
+        return GitHubIssue(
+            number = note.remoteId,
+            title = note.text,
+            body = note.text
+        )
+    }
+
     override suspend fun list(): List<Note> = withContext(Dispatchers.IO) {
         var issues: List<GitHubIssue>?
         try {
@@ -30,12 +48,52 @@ class NotesGitHubRepository(private val notesApi: NotesGitHubApi): NotesRemoteRe
         notes
     }
 
-    override suspend fun add(note: Note): Long? {
-        TODO("Not yet implemented")
+    override suspend fun add(note: Note): Long? = withContext(Dispatchers.IO) {
+        try {
+            val issue = toGitHubIssue(note)
+            val result = notesApi.add(issue)
+            if (!result.isSuccessful) {
+                Log.w("NotesRepositoryApi", "Can't create issue $result")
+                return@withContext null
+            }
+
+            result.body()?.number
+
+        } catch (e: Exception) {
+            Log.w("NotesGitHubRepository", "Can't create issue", e)
+            null
+        }
     }
 
-    override suspend fun update(note: Note): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun update(note: Note): Boolean = withContext(Dispatchers.IO) {
+        try {
+//            val issue = toGitHubIssue(note)
+//            if (issue.number == null){
+//                Log.w("NotesGitHubRepository", "Can't update issue")
+//                return@withContext false
+//            }
+//            val result = notesApi.update(issue.number, issue)
+//            if (!result.isSuccessful) {
+//                Log.w("NotesRepositoryApi", "Can't update issue $result")
+//                return@withContext false
+//            }
+//            true
+            val issue = toGitHubIssue(note)
+            issue.number?.let {
+                val result = notesApi.update(it, issue)
+                if (!result.isSuccessful) {
+                    Log.w("NotesRepositoryApi", "Can't update issue $result")
+                    false
+                } else
+                    true
+            } ?: run {
+                Log.w("NotesRepositoryApi", "Can't update issue")
+                false
+            }
+        } catch (e: Exception) {
+            Log.w("NotesGitHubRepository", "Can't update issue", e)
+            false
+        }
     }
 
     override suspend fun delete(note: Note): Boolean {

@@ -27,4 +27,7 @@ interface NotesDao {
 
     @Query("DELETE FROM note")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM note WHERE remote_id= :remoteId")
+    suspend fun byRemoteId(remoteId: Long): Note?
 }

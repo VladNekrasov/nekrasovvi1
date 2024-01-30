@@ -13,12 +13,3 @@ data class GitHubIssue(
                 body: String) :
             this(number, title, body, null)
 }
-
-fun toNote(gitHubIssue: GitHubIssue): Note {
-    return Note(
-        id = null,
-        title = gitHubIssue.title,
-        text = gitHubIssue.body,
-        remoteId = gitHubIssue.number
-    )
-}
