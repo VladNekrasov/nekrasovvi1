@@ -5,13 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import ru.protei.nekrasovvi1.domain.Note
 import ru.protei.nekrasovvi1.domain.NotesUseCase
+import javax.inject.Inject
 
-class NotesViewModel(private val notesUseCase: NotesUseCase) : ViewModel() {
+@HiltViewModel
+class NotesViewModel @Inject  constructor(private val notesUseCase: NotesUseCase) : ViewModel() {
     private val _notes = MutableStateFlow<List<Note>>(emptyList())
     val notes = _notes.asStateFlow()
     var selected  by mutableStateOf<Note?>(null)

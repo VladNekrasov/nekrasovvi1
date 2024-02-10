@@ -5,8 +5,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.protei.nekrasovvi1.domain.Note
 import ru.protei.nekrasovvi1.domain.NotesRemoteRepository
+import javax.inject.Inject
 
-class NotesGitHubRepository(private val notesApi: NotesGitHubApi): NotesRemoteRepository{
+class NotesGitHubRepository @Inject constructor(private val notesApi: NotesGitHubApi): NotesRemoteRepository{
 
     private fun toNote(gitHubIssue: GitHubIssue): Note {
         return Note(

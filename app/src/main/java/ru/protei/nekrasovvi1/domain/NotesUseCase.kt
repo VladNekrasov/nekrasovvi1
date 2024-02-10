@@ -2,8 +2,9 @@ package ru.protei.nekrasovvi1.domain
 
 import kotlinx.coroutines.flow.Flow
 import ru.protei.nekrasovvi1.data.remote.NotesGitHubRepository
+import javax.inject.Inject
 
-class NotesUseCase(
+class NotesUseCase @Inject constructor(
     private val notesRepo: NotesRepository,
     private val notesApi: NotesGitHubRepository
 ) {
